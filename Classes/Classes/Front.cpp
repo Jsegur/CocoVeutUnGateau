@@ -51,6 +51,34 @@ bool Front::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+    /////////////////////////////
+    // 2. add a menu item with "X" image, which is clicked to quit the program
+    //    you may modify it.
+
+    // add a "close" icon to exit the progress. it's an autorelease object
+    auto closeItem = MenuItemImage::create(
+                                           "ButtonTransparent1.png",
+                                           "ButtonTransparent2.png",
+                                           CC_CALLBACK_1(Front::menuCloseCallback, this));
+
+    if (closeItem == nullptr ||
+        closeItem->getContentSize().width <= 0 ||
+        closeItem->getContentSize().height <= 0)
+    {
+        problemLoading("'ButtonTransparent1.png' and 'ButtonTransparent2.png'");
+    }
+    else
+    {
+        float x = origin.x + visibleSize.width/2;
+        float y = origin.y + visibleSize.height/6;
+        closeItem->setPosition(Vec2(x,y));
+    }
+
+    // create menu, it's an autorelease object
+    auto menu = Menu::create(closeItem, NULL);
+    menu->setPosition(Vec2::ZERO);
+    this->addChild(menu, 1);
+
     // add "HelloWorld" splash screen"
     auto sprite = Sprite::create("front1.png");
     if (sprite == nullptr)
@@ -60,62 +88,14 @@ bool Front::init()
     else
     {
         // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
 
         // add the sprite as a child to this layer
         this->addChild(sprite, 0);
     }
     return true;
-
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
-
-    /* add a "close" icon to exit the progress. it's an autorelease object*/
-    auto closeItem = MenuItemImage::create(
-                                           "Button-Transparent1.png",
-                                           "Button-Transparent2.png",
-                                           CC_CALLBACK_1(Front::menuCloseCallback, this)); //-> redirection new scene
-
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
-
-    if (closeItem == nullptr ||
-        closeItem->getContentSize().width <= 0 ||
-        closeItem->getContentSize().height <= 0)
-    {
-        problemLoading("'Button-Transparent1.png' and 'Button-Transparent2.png'");
-    }
-    else
-    {
-        float x = origin.x + visibleSize.width - closeItem->getContentSize().width/2;
-        float y = origin.y + closeItem->getContentSize().height/2;
-        closeItem->setPosition(Vec2(x,y));
-    }
-
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    //auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    //if (label == nullptr)
-    //{
-    //    problemLoading("'fonts/Marker Felt.ttf'");
-    //}
-    //else
-    //{
-    //    // position the label on the center of the screen
-    //    label->setPosition(Vec2(origin.x + visibleSize.width/2,
-    //                            origin.y + visibleSize.height - label->getContentSize().height));
-
-    //    // add the label as a child to this layer
-    //    this->addChild(label, 1);
-    //}
 }
+
 
 void Front::menuCloseCallback(Ref* pSender)
 {
@@ -126,4 +106,6 @@ void Front::menuCloseCallback(Ref* pSender)
 
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
+
+
 }
