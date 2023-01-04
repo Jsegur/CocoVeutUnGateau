@@ -23,6 +23,7 @@
  ****************************************************************************/
 
 #include "Front.h"
+#include "NewScene.h"
 
 USING_NS_CC;
 
@@ -43,7 +44,7 @@ bool Front::init()
 {
     //////////////////////////////
     // 1. super init first
-    if ( !Scene::init() )
+    if (!Scene::init())
     {
         return false;
     }
@@ -56,30 +57,27 @@ bool Front::init()
     //    you may modify it.
 
     // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "ButtonTransparent1.png",
-                                           "ButtonTransparent2.png",
-                                           CC_CALLBACK_1(Front::menuCloseCallback, this));
+    auto button = MenuItemImage::create("ButtonTransparent1.png", "ButtonTransparent2.png", CC_CALLBACK_1(Front::TouchEventScene, this));
 
-    if (closeItem == nullptr ||
-        closeItem->getContentSize().width <= 0 ||
-        closeItem->getContentSize().height <= 0)
+    if (button == nullptr ||
+        button->getContentSize().width <= 0 ||
+        button->getContentSize().height <= 0)
     {
         problemLoading("'ButtonTransparent1.png' and 'ButtonTransparent2.png'");
     }
     else
     {
-        float x = origin.x + visibleSize.width/2;
-        float y = origin.y + visibleSize.height/6;
-        closeItem->setPosition(Vec2(x,y));
+        float x = origin.x + visibleSize.width / 2;
+        float y = origin.y + visibleSize.height / 6;
+        button->setPosition(Vec2(x, y));
     }
 
     // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
+    auto menu = Menu::create(button, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-    // add "HelloWorld" splash screen"
+    // add "front" splash screen"
     auto sprite = Sprite::create("front1.png");
     if (sprite == nullptr)
     {
@@ -88,19 +86,43 @@ bool Front::init()
     else
     {
         // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+        sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
         // add the sprite as a child to this layer
         this->addChild(sprite, 0);
     }
+
+    
+    auto label = Label::createWithTTF("Play", "fonts/Marker Felt.ttf", 24);
+    if (label == nullptr)
+    {
+        problemLoading("'fonts/Marker Felt.ttf'");
+    }
+    else
+    {
+        // position the label on the center of the screen
+        label->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height /6));
+
+        // add the label as a child to this layer
+        this->addChild(label, 1);
+    }
+
     return true;
-}
+};
 
-
-void Front::menuCloseCallback(Ref* pSender)
+bool Front::TouchEventScene(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
+
+    auto Test = NewScene::createScene();
+    if (!Scene::init())
+    {
+        return false;
+    }
+    else {
+        Director::getInstance()->replaceScene(Test);
+        return true;
+    }
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
